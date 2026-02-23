@@ -154,7 +154,12 @@
                      <div class="card-scores">
                        <div class="team-score">
                          <span class="team-name">{game.leftTeamName}</span>
-                         <span class="score-number">{game.leftSets > 0 || game.rightSets > 0 ? game.leftSets : game.leftScore}</span>
+                         <div class="score-wrapper">
+                           <span class="score-number">{game.leftSets > 0 || game.rightSets > 0 ? game.leftSets : game.leftScore}</span>
+                           {#if game.leftSets > 0 || game.rightSets > 0}
+                             <span class="minor-score">{game.leftScore} pts</span>
+                           {/if}
+                         </div>
                        </div>
                        <div class="score-divider">
                          {#if game.leftSets > 0 || game.rightSets > 0}
@@ -164,7 +169,12 @@
                          {/if}
                        </div>
                        <div class="team-score right-align">
-                         <span class="score-number">{game.leftSets > 0 || game.rightSets > 0 ? game.rightSets : game.rightScore}</span>
+                         <div class="score-wrapper">
+                           <span class="score-number">{game.leftSets > 0 || game.rightSets > 0 ? game.rightSets : game.rightScore}</span>
+                           {#if game.leftSets > 0 || game.rightSets > 0}
+                             <span class="minor-score">{game.rightScore} pts</span>
+                           {/if}
+                         </div>
                          <span class="team-name">{game.rightTeamName}</span>
                        </div>
                      </div>
@@ -499,6 +509,22 @@
     font-weight: 900;
     min-width: 2rem;
     text-align: center;
+    line-height: 1;
+  }
+  
+  .score-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .minor-score {
+    font-size: 0.75rem;
+    color: #64748b;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-top: 0.25rem;
   }
 
   .score-divider {
