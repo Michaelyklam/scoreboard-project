@@ -151,16 +151,19 @@
                        <span class="match-date">{new Date(game.endedAt || game.createdAt).toLocaleDateString()}</span>
                        <span class="archived-badge">FINAL</span>
                      </div>
-                     <div class="card-scores">
+                      <div class="card-scores">
                        <div class="team-score">
                          <span class="team-name">{game.leftTeamName}</span>
-                         <div class="score-wrapper">
-                           <span class="score-number">{game.leftSets > 0 || game.rightSets > 0 ? game.leftSets : game.leftScore}</span>
-                           {#if game.leftSets > 0 || game.rightSets > 0}
-                             <span class="minor-score">{game.leftScore} pts</span>
-                           {/if}
-                         </div>
+                         {#if game.leftSets > 0 || game.rightSets > 0}
+                           <div class="score-wrapper">
+                             <span class="score-number">{game.leftSets}</span>
+                             <span class="minor-score">{game.leftScore} PTS</span>
+                           </div>
+                         {:else}
+                           <span class="score-number">{game.leftScore}</span>
+                         {/if}
                        </div>
+                       
                        <div class="score-divider">
                          {#if game.leftSets > 0 || game.rightSets > 0}
                            <span class="set-label">SETS</span>
@@ -168,13 +171,16 @@
                            -
                          {/if}
                        </div>
+                       
                        <div class="team-score right-align">
-                         <div class="score-wrapper">
-                           <span class="score-number">{game.leftSets > 0 || game.rightSets > 0 ? game.rightSets : game.rightScore}</span>
-                           {#if game.leftSets > 0 || game.rightSets > 0}
-                             <span class="minor-score">{game.rightScore} pts</span>
-                           {/if}
-                         </div>
+                         {#if game.leftSets > 0 || game.rightSets > 0}
+                           <div class="score-wrapper reverse">
+                             <span class="score-number">{game.rightSets}</span>
+                             <span class="minor-score">{game.rightScore} PTS</span>
+                           </div>
+                         {:else}
+                           <span class="score-number">{game.rightScore}</span>
+                         {/if}
                          <span class="team-name">{game.rightTeamName}</span>
                        </div>
                      </div>
@@ -514,17 +520,19 @@
   
   .score-wrapper {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: center;
+    gap: 0.5rem;
+  }
+  
+  .score-wrapper.reverse {
+    flex-direction: row-reverse;
   }
   
   .minor-score {
-    font-size: 0.75rem;
+    font-size: 0.9rem;
     color: #64748b;
     font-weight: 800;
     text-transform: uppercase;
-    margin-top: 0.25rem;
   }
 
   .score-divider {
@@ -540,5 +548,14 @@
     font-size: 0.9rem;
     letter-spacing: 1px;
     color: #94a3b8;
+  }
+  
+  @media (max-width: 768px) {
+    .minor-score {
+      display: none;
+    }
+    .score-wrapper {
+      gap: 0;
+    }
   }
 </style>
