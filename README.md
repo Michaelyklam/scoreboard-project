@@ -1,6 +1,6 @@
-# Sports Network Scoreboard
+# Sports Scoreboard
 
-A sleek, real-time sports scoreboard application built with **Svelte 5** and **Convex**. Designed with a premium "Modern Sports Network" aesthetic, it supports instant live scoring, set tracking, and real-time spectator synchronization.
+A real-time sports scoreboard application built with **Svelte 5** and **Convex**. It supports instant live scoring, set tracking, and real-time spectator synchronization.
 
 ## Features
 
