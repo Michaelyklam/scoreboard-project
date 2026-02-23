@@ -68,16 +68,16 @@
         <h1 class="hero-headline">START A NEW MATCH</h1>
         <form class="match-form" onsubmit={handleCreate}>
           <div class="team-inputs">
-            <div class="input-wrapper">
-              <input type="text" bind:value={leftTeam} placeholder="RED" required class="team-input bg-dark-red" />
+            <div class="input-wrapper bg-dark-red">
+              <input type="text" bind:value={leftTeam} placeholder="RED" required class="team-input" />
               <svg class="edit-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 20h9"></path>
                 <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
               </svg>
             </div>
             <div class="vs-circle">VS</div>
-            <div class="input-wrapper">
-              <input type="text" bind:value={rightTeam} placeholder="BLUE" required class="team-input bg-dark-blue" />
+            <div class="input-wrapper bg-dark-blue">
+              <input type="text" bind:value={rightTeam} placeholder="BLUE" required class="team-input" />
               <svg class="edit-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 20h9"></path>
                 <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
@@ -90,6 +90,56 @@
         </form>
       </div>
     </section>
+
+    {#snippet matchCard(game: any, isArchive: boolean)}
+      <a href={`/game/${game.gameCode}`} class="match-card {isArchive ? 'archived' : ''}">
+        <div class="card-top">
+          <span class="match-date">{new Date(game.endedAt || game.createdAt).toLocaleDateString()}</span>
+          {#if isArchive}
+            <span class="archived-badge">FINAL</span>
+          {:else}
+            <span class="live-badge">LIVE</span>
+          {/if}
+        </div>
+        <div class="card-scores">
+          <div class="team-score">
+            <span class="team-name">{game.leftTeamName}</span>
+            {#if game.leftSets > 0 || game.rightSets > 0}
+              <span class="score-number">{game.leftSets}</span>
+            {:else}
+              <span class="score-number">{game.leftScore}</span>
+            {/if}
+          </div>
+          
+          <div class="score-divider">
+            {#if game.leftSets > 0 || game.rightSets > 0}
+              <span class="set-label">SETS</span>
+            {:else}
+              -
+            {/if}
+          </div>
+          
+          <div class="team-score right-align">
+            {#if game.leftSets > 0 || game.rightSets > 0}
+              <span class="score-number">{game.rightSets}</span>
+            {:else}
+              <span class="score-number">{game.rightScore}</span>
+            {/if}
+            <span class="team-name">{game.rightTeamName}</span>
+          </div>
+
+          {#if game.leftSets > 0 || game.rightSets > 0}
+            <!-- Expanded Points Display -->
+            <div class="points-divider">|</div>
+            <div class="points-display">
+              <span class="minor-score">{game.leftScore}</span>
+              <span class="minor-divider">-</span>
+              <span class="minor-score">{game.rightScore}</span>
+            </div>
+          {/if}
+        </div>
+      </a>
+    {/snippet}
 
     <div class="dashboard-grid">
 
@@ -107,22 +157,7 @@
           {:else}
             <div class="match-cards">
               {#each liveGames as game (game._id)}
-                <a href={`/game/${game.gameCode}`} class="match-card">
-                  <div class="card-top">
-                    <span class="match-date">{new Date(game.createdAt).toLocaleDateString()}</span>
-                  </div>
-                  <div class="card-scores">
-                    <div class="team-score">
-                      <span class="team-name">{game.leftTeamName}</span>
-                      <span class="score-number">{game.leftScore}</span>
-                    </div>
-                    <div class="score-divider">-</div>
-                    <div class="team-score right-align">
-                      <span class="score-number">{game.rightScore}</span>
-                      <span class="team-name">{game.rightTeamName}</span>
-                    </div>
-                  </div>
-                </a>
+                {@render matchCard(game, false)}
               {/each}
             </div>
           {/if}
@@ -158,49 +193,7 @@
              {:else}
                <div class="match-cards">
                  {#each results as game (game._id)}
-                   <a href={`/game/${game.gameCode}`} class="match-card archived">
-                     <div class="card-top">
-                       <span class="match-date">{new Date(game.endedAt || game.createdAt).toLocaleDateString()}</span>
-                       <span class="archived-badge">FINAL</span>
-                     </div>
-                      <div class="card-scores">
-                       <div class="team-score">
-                         <span class="team-name">{game.leftTeamName}</span>
-                         {#if game.leftSets > 0 || game.rightSets > 0}
-                           <span class="score-number">{game.leftSets}</span>
-                         {:else}
-                           <span class="score-number">{game.leftScore}</span>
-                         {/if}
-                       </div>
-                       
-                       <div class="score-divider">
-                         {#if game.leftSets > 0 || game.rightSets > 0}
-                           <span class="set-label">SETS</span>
-                         {:else}
-                           -
-                         {/if}
-                       </div>
-                       
-                       <div class="team-score right-align">
-                         {#if game.leftSets > 0 || game.rightSets > 0}
-                           <span class="score-number">{game.rightSets}</span>
-                         {:else}
-                           <span class="score-number">{game.rightScore}</span>
-                         {/if}
-                         <span class="team-name">{game.rightTeamName}</span>
-                       </div>
-
-                       {#if game.leftSets > 0 || game.rightSets > 0}
-                         <!-- Expanded Points Display -->
-                         <div class="points-divider">|</div>
-                         <div class="points-display">
-                           <span class="minor-score">{game.leftScore}</span>
-                           <span class="minor-divider">-</span>
-                           <span class="minor-score">{game.rightScore}</span>
-                         </div>
-                       {/if}
-                     </div>
-                   </a>
+                   {@render matchCard(game, true)}
                  {/each}
                </div>
              {/if}
@@ -295,16 +288,32 @@
     .team-inputs { flex-direction: column; border-radius: 20px; gap: 0.5rem; background: transparent; border: none; padding: 0; }
   }
 
-  .team-input {
+  .input-wrapper {
     flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-right: 2rem;
+  }
+  
+  .edit-icon {
+    color: rgba(255, 255, 255, 0.4);
+    pointer-events: none;
+    flex-shrink: 0;
+  }
+
+  .team-input {
+    width: auto;
+    max-width: 60%;
     border: none;
-    padding: 1.5rem 2rem;
+    padding: 1.5rem 1rem 1.5rem 2rem;
     font-size: 1.25rem;
     font-weight: 800;
     color: white;
-    text-align: center;
+    text-align: right;
     text-transform: uppercase;
     outline: none;
+    background: transparent;
   }
   .team-input::placeholder {
     color: rgba(255,255,255,0.4);
@@ -494,6 +503,16 @@
     padding: 0.2rem 0.5rem;
     border-radius: 4px;
     color: #cbd5e1;
+  }
+  .live-badge {
+    font-size: 0.75rem;
+    font-weight: 800;
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    color: #fca5a5;
   }
 
   .card-scores {
