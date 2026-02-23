@@ -68,9 +68,21 @@
         <h1 class="hero-headline">START A NEW MATCH</h1>
         <form class="match-form" onsubmit={handleCreate}>
           <div class="team-inputs">
-            <input type="text" bind:value={leftTeam} placeholder="RED" required class="team-input bg-dark-red" />
+            <div class="input-wrapper">
+              <input type="text" bind:value={leftTeam} placeholder="RED" required class="team-input bg-dark-red" />
+              <svg class="edit-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 20h9"></path>
+                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+              </svg>
+            </div>
             <div class="vs-circle">VS</div>
-            <input type="text" bind:value={rightTeam} placeholder="BLUE" required class="team-input bg-dark-blue" />
+            <div class="input-wrapper">
+              <input type="text" bind:value={rightTeam} placeholder="BLUE" required class="team-input bg-dark-blue" />
+              <svg class="edit-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 20h9"></path>
+                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+              </svg>
+            </div>
           </div>
           <button type="submit" class="launch-btn" disabled={isCreating || !leftTeam || !rightTeam}>
             {isCreating ? 'STARTING...' : 'GO LIVE'}
@@ -155,10 +167,7 @@
                        <div class="team-score">
                          <span class="team-name">{game.leftTeamName}</span>
                          {#if game.leftSets > 0 || game.rightSets > 0}
-                           <div class="score-wrapper">
-                             <span class="score-number">{game.leftSets}</span>
-                             <span class="minor-score">{game.leftScore} PTS</span>
-                           </div>
+                           <span class="score-number">{game.leftSets}</span>
                          {:else}
                            <span class="score-number">{game.leftScore}</span>
                          {/if}
@@ -174,15 +183,22 @@
                        
                        <div class="team-score right-align">
                          {#if game.leftSets > 0 || game.rightSets > 0}
-                           <div class="score-wrapper reverse">
-                             <span class="score-number">{game.rightSets}</span>
-                             <span class="minor-score">{game.rightScore} PTS</span>
-                           </div>
+                           <span class="score-number">{game.rightSets}</span>
                          {:else}
                            <span class="score-number">{game.rightScore}</span>
                          {/if}
                          <span class="team-name">{game.rightTeamName}</span>
                        </div>
+
+                       {#if game.leftSets > 0 || game.rightSets > 0}
+                         <!-- Expanded Points Display -->
+                         <div class="points-divider">|</div>
+                         <div class="points-display">
+                           <span class="minor-score">{game.leftScore}</span>
+                           <span class="minor-divider">-</span>
+                           <span class="minor-score">{game.rightScore}</span>
+                         </div>
+                       {/if}
                      </div>
                    </a>
                  {/each}
@@ -518,21 +534,33 @@
     line-height: 1;
   }
   
-  .score-wrapper {
+  .points-divider {
+    font-size: 1.5rem;
+    color: #334155;
+    margin: 0 0.5rem 0 1rem;
+    font-weight: 300;
+  }
+  
+  .points-display {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    background: #0f1115;
+    padding: 0.25rem 0.75rem;
+    border-radius: 8px;
+    border: 1px solid #1e293b;
   }
-  
-  .score-wrapper.reverse {
-    flex-direction: row-reverse;
-  }
-  
+
   .minor-score {
+    font-size: 1.1rem;
+    color: #94a3b8;
+    font-weight: 700;
+  }
+  
+  .minor-divider {
+    color: #475569;
+    font-weight: 700;
     font-size: 0.9rem;
-    color: #64748b;
-    font-weight: 800;
-    text-transform: uppercase;
   }
 
   .score-divider {
@@ -551,11 +579,8 @@
   }
   
   @media (max-width: 768px) {
-    .minor-score {
+    .points-divider, .points-display {
       display: none;
-    }
-    .score-wrapper {
-      gap: 0;
     }
   }
 </style>
